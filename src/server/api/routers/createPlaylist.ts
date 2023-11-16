@@ -12,7 +12,7 @@ export const playlistRouter = createTRPCRouter({
         const {userId} = auth()
 
         const temp = await clerkClient.users.getUser(userId as string)
-        const spotifyUsername = temp.externalAccounts[0].externalId
+        const spotifyUsername = temp.externalAccounts[0].externalId as string
 
         const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
         const accessToken = authInfo[0].token
