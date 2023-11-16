@@ -1,6 +1,6 @@
 'use client'
 import { useRouter, usePathname } from "next/navigation"
-import { type ChangeEvent, useState } from "react"
+import { type ChangeEvent, useState, useTransition } from "react"
 import ShareLink from "./shareLink"
 
 
@@ -11,6 +11,7 @@ const Search = () => {
     const [userInput, setUserInput] = useState("")
     const pathname = usePathname()
 
+    const [, startTransition] = useTransition()
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
