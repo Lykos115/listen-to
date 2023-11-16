@@ -3,8 +3,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { inList, pendingSong, users } from "@/server/db/schema";
-import { eq, and, isNotNull, exists } from "drizzle-orm"
-import { CreatePlaylist } from "spotifyTypes";
+import { eq, exists } from "drizzle-orm"
+import type { CreatePlaylist } from "spotifyTypes";
 
 export const playlistRouter = createTRPCRouter({
   create: publicProcedure
@@ -64,8 +64,6 @@ export const playlistRouter = createTRPCRouter({
             const query = ctx.db.select({id:users.userSlug}).from(users).where(eq(users.userSlug, input.userId))
             const songInPlaylist = await ctx.db.select().from(inList).where(exists(query))
             const songInPendinglist = await ctx.db.select().from(pendingSong).where(exists(query))
-
-            const songBoolean = songInPlaylist.length === 0 && songInPendinglist.length === 0
 
             return songInPendinglist.some(el => el.songURI === input.songURI) || songInPlaylist.some(el => el.songURI === input.songURI)
         }),

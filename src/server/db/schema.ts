@@ -1,12 +1,9 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
 import {
   bigint,
-  index,
   mysqlTableCreator,
-  timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
 
