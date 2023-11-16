@@ -99,7 +99,7 @@ export const playlistRouter = createTRPCRouter({
         }),
     addPending: publicProcedure
         .input(z.object({userSlug: z.string()}))
-        .mutation(async ({ctx}) => {
+        .mutation(async ({ctx,input}) => {
 
             const {userId} = auth()
 
