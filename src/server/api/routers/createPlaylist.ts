@@ -104,7 +104,7 @@ export const playlistRouter = createTRPCRouter({
             const {userId} = auth()
 
             const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
-            const accessToken = authInfo[0].token
+            const accessToken = authInfo[0]?.token
 
             const playlistID = await ctx.db.select({playlistId: users.playlistId}).from(users).where(eq(users.userSlug, input.userSlug))
             const uriFormat= input.songURI.split(':').join('%3A')
