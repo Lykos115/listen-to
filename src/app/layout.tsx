@@ -24,7 +24,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <ClerkProvider>
             <TRPCReactProvider headers={headers()}>
@@ -33,6 +32,5 @@ export default function RootLayout({
             </TRPCReactProvider>
         </ClerkProvider>
       </body>
-    </html>
   );
 }
