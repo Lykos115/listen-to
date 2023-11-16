@@ -13,7 +13,7 @@ async function getData(searchString:string, queueID:string){
     const {userId} = auth();
 
     if(userId){
-        const slug = userId.split('_')[1]
+        const slug = userId.split('_')[1] as string
         const playlistExist = await api.playlist.hasPlaylist.query({userId: slug})
         if(!playlistExist){
             await api.playlist.create.mutate({userId: slug, playlistName: "listen to"})
