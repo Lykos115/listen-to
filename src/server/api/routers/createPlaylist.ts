@@ -15,7 +15,7 @@ export const playlistRouter = createTRPCRouter({
         const spotifyUsername = temp?.externalAccounts[0]?.externalId as string
 
         const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
-        const accessToken = authInfo[0].token
+        const accessToken = authInfo[0]?.token
 
 
         const results = await fetch(`https://api.spotify.com/v1/users/${spotifyUsername}/playlists`, {
