@@ -3,19 +3,13 @@ import { UserButton, auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 
-async function getUserID() {
-    const res  = await auth()
-    return res.userId
+export default function Home() {
 
-}
-
-export default async function Home() {
-
-    const data = await getUserID()
+    const { userId } = auth()
 
     
-    if(data){
-        const slug = data.split('_')[1]
+    if(userId){
+        const slug = userId.split('_')[1]
         redirect(`/${slug}`)
     }
     

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { inList, pendingSong, users } from "@/server/db/schema";
 import { eq, and, isNotNull, exists } from "drizzle-orm"
+import { CreatePlaylist } from "spotifyTypes";
 
 export const playlistRouter = createTRPCRouter({
   create: publicProcedure
@@ -11,10 +12,13 @@ export const playlistRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
         const {userId} = auth()
 
-        const temp = await clerkClient.users.getUser(userId as string)
-        const spotifyUsername = temp?.externalAccounts[0]?.externalId as string
+        const temp = await clerkClient.users.getUser(userId!)
 
-        const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
+        const {externalAccounts} = temp
+        const spotifyUsername = externalAccounts[0]?.externalId
+//.externalAccounts[0].externalId
+
+        const authInfo = await clerkClient.users.getUserOauthAccessToken(userId! , "oauth_spotify")
         const accessToken = authInfo[0]?.token
 
 
@@ -29,7 +33,7 @@ export const playlistRouter = createTRPCRouter({
 
             }),
             method:'POST'
-        }).then(res => res.json())
+        }).then((res ) => res.json()) as CreatePlaylist
 
         const playlistID = results.id 
 
@@ -77,7 +81,7 @@ export const playlistRouter = createTRPCRouter({
             }
 
 
-            const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
+            const authInfo = await clerkClient.users.getUserOauthAccessToken(userId , "oauth_spotify")
             const accessToken = authInfo[0]?.token
 
             const playlistID = await ctx.db.select({playlistId: users.playlistId}).from(users).where(eq(users.userSlug, input.userSlug))
@@ -91,10 +95,10 @@ export const playlistRouter = createTRPCRouter({
                 },
                 method:'POST'
             })
-            .then(res => res.json())
+            
 
 
-            return results
+            return results.status
 
         }),
     addPending: publicProcedure
@@ -103,7 +107,7 @@ export const playlistRouter = createTRPCRouter({
 
             const {userId} = auth()
 
-            const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
+            const authInfo = await clerkClient.users.getUserOauthAccessToken(userId!, "oauth_spotify")
             const accessToken = authInfo[0]?.token
 
             const playlistID = await ctx.db.select({playlistId: users.playlistId}).from(users).where(eq(users.userSlug, input.userSlug))
@@ -116,6 +120,7 @@ export const playlistRouter = createTRPCRouter({
                 },
                 method:'POST'
             })
-            .then(res => res.json())
+
+            return results.status
         })
 });

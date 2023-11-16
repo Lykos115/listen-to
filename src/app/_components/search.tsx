@@ -1,19 +1,19 @@
 'use client'
 import { useRouter, usePathname } from "next/navigation"
-import { useState, useTransition } from "react"
+import { type ChangeEvent, useState, useTransition } from "react"
 import ShareLink from "./shareLink"
 
 
 
 const Search = () => {
 
-    const { replace } = useRouter()
+    const router = useRouter()
     const [userInput, setUserInput] = useState("")
     const pathname = usePathname()
 
     const [isPending, startTransition] = useTransition()
 
-    const handleInputChange = (event: any) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
         setUserInput(value)
     }
@@ -30,7 +30,7 @@ const Search = () => {
         params.delete("page")
 
         startTransition(() => {
-            replace(`${pathname}?${params.toString()}`)
+            router.replace(`${pathname}?${params.toString()}`)
         })
     }
     
