@@ -8,17 +8,17 @@ export const dynamic = 'force-dynamic'
 
 async function getData(searchString:string, queueID:string){
 
+    if(!searchString) return {}
+
     const {userId} = auth();
 
-    const slug = userId.split('_')[1]
     if(userId){
+        const slug = userId.split('_')[1]
         const playlistExist = await api.playlist.hasPlaylist.query({userId: slug})
         if(!playlistExist){
             await api.playlist.create.mutate({userId: slug, playlistName: "listen to"})
         }
     }
-
-    const test = await api.playlist.songInList.query({userId: slug})
 
 
 
@@ -38,7 +38,6 @@ async function getData(searchString:string, queueID:string){
         }
     }).then(res => res.json())
     
-    //data.results?.tracks?.items?.map((track:any) => {
     const tracks = results.tracks.items
 
     return {tracks}
@@ -50,9 +49,9 @@ export default async function UsersPage({searchParams, params} : {searchParams: 
     const {tracks} = await getData(searchParams.search, params.usersID)
 
   return (
-    <main className="flex min-h-screen flex-row p-8 bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+    <main className="flex min-h-screen p-8 bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white justify-center">
         
-        <div className="container flex flex-col items-center justify-center">
+        <div className="container flex flex-col items-center">
             <Search />
             <div className="flex flex-col items-center justify-center md:flex-row md:flex-wrap">
                {

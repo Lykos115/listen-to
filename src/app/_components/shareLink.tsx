@@ -1,12 +1,9 @@
 'use client'
 
-import { useState } from "react"
 import ShareSVG from "./shareSVG"
 
 
 const ShareLink = () => {
-
-    const [copyStatus, setCopyStatus] = useState(false)
 
     async function copyToClipboard() {
         await navigator.clipboard.writeText(location.href)

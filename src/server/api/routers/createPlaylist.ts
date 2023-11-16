@@ -54,7 +54,7 @@ export const playlistRouter = createTRPCRouter({
 
         }),
     songInList: publicProcedure
-        .input(z.object({userId: z.string()}))
+        .input(z.object({userId: z.string(), songURI: z.string()}))
         .query(async ({ctx,input}) => {
 
             const query = ctx.db.select({id:users.userSlug}).from(users).where(eq(users.userSlug, input.userId))
@@ -63,22 +63,11 @@ export const playlistRouter = createTRPCRouter({
 
             const songBoolean = songInPlaylist.length === 0 && songInPendinglist.length === 0
 
-            return songBoolean ? 'Song not in playlists' : 'Song in Playlist'
+            return songInPendinglist.some(el => el.songURI === input.songURI) || songInPlaylist.some(el => el.songURI === input.songURI)
         }),
     addToPlaylist: publicProcedure
         .input(z.object({songId: z.string(), songURI: z.string(), userSlug: z.string()}))
         .mutation(async ({ctx, input}) => {
-            //const songInList = await ctx.db.select().from(inList).where(
-            //        eq(inList.userSlug, input.userSlug),
-            //)
-
-            //const songInPending = await ctx.db.select().from(pendingSong).where(
-            //            isNotNull(inList.userSlug),
-            //)
-
-            //if(songInList.find(el => el === input.songURI) || songInPending.find(el => el === input.songURI)){
-            //    return "song already in list"
-            //}
 
             const {userId} = auth()
 
@@ -87,9 +76,6 @@ export const playlistRouter = createTRPCRouter({
                 return "song will be added when user auths"
             }
 
-
-            const temp = await clerkClient.users.getUser(userId as string)
-            const spotifyUsername = temp.externalAccounts[0].externalId
 
             const authInfo = await clerkClient.users.getUserOauthAccessToken(userId as string, "oauth_spotify")
             const accessToken = authInfo[0].token
